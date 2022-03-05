@@ -34,30 +34,30 @@ The minimax algorithm returns the objectivly best move, meaning the move that is
 
 #### [Minimax.kt](https://github.com/danielbinder/GameAI/blob/main/src/main/kotlin/Minimax.kt) is a simple and fairly generic implementation of the minimax algorithm.
 
-##### interface State<Action>
-The State<Action> interface represents a game state, e.g. your playing field. 'Action' is the type corrisponding to an action in your game world i.e. a class representing a players' (or the AI's) action. In order to use the minimax algorithm, you have to implement the following methods:
+##### `interface State<Action>`
+The `State<Action>` interface represents a game state, e.g. your playing field. 'Action' is the type corrisponding to an action in your game world i.e. a class representing a players' (or the AI's) action. In order to use the minimax algorithm, you have to implement the following methods:
 
-fun getPossibleActions(): List<Action><br/>
+`fun getPossibleActions(): List<Action>`<br/>
 This returns a list with all actions possible in the current state. It needs to return at least one action for the algorithm to work properly. I could easily change this, but then you'd have to figure out the best move from all action-evaluation pairs yourself, and I wanted to keep usage as simple as possible.
  
-fun execute(action: Action): State<Action><br/>
+`fun execute(action: Action): State<Action>`<br/>
 This takes and action and executes it. Returned is a new state that this action produced.
  
-fun isGameOver(): Boolean<br/>
+`fun isGameOver(): Boolean`<br/>
 Returns 'true' if the game is over.
 
 Up to this point, you should already have everything, or at least something similar that is easy to change into the method you need. Now let's talk about how a generic AI can even function.
 
-fun utility(): Double<br/>
+`fun utility(): Double`<br/>
 A generic AI can't know what's important in your game world and can't know what variables to use and how heavily these variables influence your world. This is why we need some sort of utility function. This function can return a fairly simple world view e.g. WIN = 100.0; LOSS (i.e. other player won) = -100.0; UNCERTAIN = 0. This information should be easily extractable from your game world, after all, you need to know when someone has won anyways. The uncertainty element can be in there, since the whole search space is traversed and the minimax algorithm chooses the biggest or smallest value anyway, so we can use something in the middle to represent equality or uncertainty.
  
- ##### interface Player
+ ##### `interface Player`
 This represents a player in your game (both the AI and humans are considered to be players). This can be as simple as 'X' and 'O' in TicTacToe or as complex as you want it to be, but it must have a 'maxPlayer' and 'minPlayer' attribute. The maxPlayer is the one who is favoured when the evaluation is positive or high, the minPlayer is favoured when the evaluation is negative or low. You can choose whomever to be the max- or minPlayer.
  
-##### class Minimax<Action> (val futureValueWorthPolicy: ((Double) -> Double) = { it * 0.5 })
-This is the AI-algorithm itself. The futureVAlueWorthPolicy determines how much future values are worth compared to current values. The idea behind this is, that immediate actions should be worth more than future actions with the same evaluation. By default, actions one step in the future with the same evaluation are worth half of current actions (this reduction might be too high for your case). Future actions are worth more, the higher you choose the number the evaluation is multiplied with e.g. 'it * 0.9' means Future actions have 90% worth of current actions. You can give this any function that takes a Double and returns a Double.
+##### `class Minimax<Action> (val futureValueWorthPolicy: ((Double) -> Double) = { it * 0.5 })`
+This is the AI-algorithm itself. The futureVAlueWorthPolicy determines how much future values are worth compared to current values. The idea behind this is, that immediate actions should be worth more than future actions with the same evaluation. By default, actions one step in the future with the same evaluation are worth half of current actions (this reduction might be too high for your case). Future actions are worth more, the higher you choose the number the evaluation is multiplied with e.g. `it * 0.9` means Future actions have 90% worth of current actions. You can give this any function that takes a Double and returns a Double.
 
-fun minimax(state: State<Action>, toMove: Player): Map.Entry<Action, Double><br/>
+`fun minimax(state: State<Action>, toMove: Player): Map.Entry<Action, Double>`<br/>
 This is the core. It takes the current game state and which players' move is next i.e. the player to move next. It will return a Map Entry with the best action as key and the action's evaluation as value.
 
 #### [TicTacToe.kt](https://github.com/danielbinder/GameAI/blob/main/src/main/kotlin/TicTacToe.kt)
