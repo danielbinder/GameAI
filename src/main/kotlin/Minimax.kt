@@ -94,13 +94,13 @@ sealed interface State<Action> {
         val best = minimax(maxPlayerToMove)
 
         return when(difficulty) {
-            Difficulty.FREE -> Pair(minimax(!maxPlayerToMove).first, eval(maxPlayerToMove))
+            Difficulty.FREE -> Pair(minimax(!maxPlayerToMove).first, best.second)
             Difficulty.EASY -> Pair(randomAction, best.second)
             Difficulty.MEDIUM ->
-                if(Random.nextInt() > thresholds[0]) Pair(randomAction, best.second) else minimax(maxPlayerToMove)
+                if(Random.nextInt() > thresholds[0]) Pair(randomAction, best.second) else best
             Difficulty.HARD ->
-                if(Random.nextInt() > thresholds[1]) Pair(randomAction, best.second) else minimax(maxPlayerToMove)
-            Difficulty.IMPOSSIBLE -> minimax(maxPlayerToMove)
+                if(Random.nextInt() > thresholds[1]) Pair(randomAction, best.second) else best
+            Difficulty.IMPOSSIBLE -> best
         }
     }
 }
