@@ -27,9 +27,11 @@ What I care about (in no particular order):
 * Logical separation
 
 Things to do:
-* Alpha-Beta Pruning
-* Enclosing this in a generic Monte Carlo Search Tree
 * More examples
+* Adding an option for imperfect play
+* Adding a cutoff function
+* Maybe adding Quiescence Search
+* Enclosing this in a generic Monte Carlo Search Tree
 
 ### Explanation
 The minimax algorithm returns the objectively best move, meaning the move that is best, even when the other player makes the best response.

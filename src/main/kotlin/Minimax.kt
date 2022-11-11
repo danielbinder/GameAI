@@ -1,3 +1,5 @@
+import java.lang.Double.max
+import java.lang.Double.min
 import kotlin.random.Random
 
 /**
@@ -51,37 +53,45 @@ sealed interface State<Action> {
     private fun minimax(maxPlayerToMove: Boolean): Pair<Action, Double> {
         return if(maxPlayerToMove)
                     getPossibleActions()
+                        .assert { !isEmpty() }
                         .shuffled()         // to get different best move each time
-                        .associateWith { minValue(execute(it)) }
+                        .associateWith { minValue(execute(it).assert { !equals(it) }, -99999.0, 99999.0) }
                         .maxWithOrNull { x, y -> x.value.compareTo(y.value) }!!
                         .toPair()
                 else
                     getPossibleActions()
+                        .assert { !isEmpty() }
                         .shuffled()         // to get different best move each time
-                        .associateWith { maxValue(execute(it)) }
+                        .associateWith { maxValue(execute(it).assert { !equals(it) }, -99999.0, 99999.0) }
                         .minWithOrNull() { x, y -> x.value.compareTo(y.value) }!!
                         .toPair()
     }
 
-    private fun maxValue(state: State<Action>): Double {
+    private fun maxValue(state: State<Action>, alpha: Double, beta: Double): Double {
         if(state.isGameOver()) return state.utility()
         var v: Double = -99999.0
+        var alpha_: Double = alpha
 
-        for(a in state.getPossibleActions()) {
-            val result = minValue(state.execute(a))
-            if(result > v) v = result
+        for(a in state.getPossibleActions().assert { !isEmpty() }) {
+            v = max(v, minValue(state.execute(a).assert { !equals(state) }, alpha_, beta))
+
+            if(v >= beta) break;
+            alpha_ = max(alpha_, v)
         }
 
         return futureValueWorthPolicy(v)
     }
 
-    private fun minValue(state: State<Action>): Double {
+    private fun minValue(state: State<Action>, alpha: Double, beta: Double): Double {
         if(state.isGameOver()) return state.utility()
         var v: Double = +99999.0
+        var beta_: Double = beta
 
-        for(a in state.getPossibleActions()) {
-            val result = maxValue(state.execute(a))
-            if(result < v) v = result
+        for(a in state.getPossibleActions().assert { !isEmpty() }) {
+            v = min(v, maxValue(state.execute(a).assert { !equals(state) }, alpha, beta_))
+
+            if(v <= alpha) break;
+            beta_ = min(beta_, v)
         }
 
         return futureValueWorthPolicy(v)
@@ -102,6 +112,16 @@ sealed interface State<Action> {
                 if(Random.nextInt() > thresholds[1]) Pair(randomAction, best.second) else best
             Difficulty.IMPOSSIBLE -> best
         }
+    }
+
+    private fun assert(receiver: State<Action>.() -> Boolean): State<Action> {
+        assert(this.receiver())
+        return this
+    }
+
+    private fun List<Action>.assert(receiver: List<Action>.() -> Boolean): List<Action> {
+        assert(this.receiver())
+        return this
     }
 }
 
