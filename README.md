@@ -1,5 +1,5 @@
 # GameAI
-Automatic AI for 2-player turn based games with small search spaces.
+Automatic AI for 2-player turn based games with small search spaces using the minimax algorithm enhanced by alpha-beta pruning.
 
 ### What it does:
 Follow the structure in the [Minimax.kt](https://github.com/danielbinder/GameAI/blob/main/src/main/kotlin/Minimax.kt) interfaces and you can have an automatic AI for your 2 player turn based game.
@@ -11,30 +11,8 @@ Go for it - I tried to make everything as readable and modifiable as possible.
 Check out the explanation below, and the license in the 'LICENSE' file.
 Regardless of the license, it would be cool if you somehow mentioned, that you got this code from here :)
 
-### Contributions
-If you want to understand the project, read the explanation below.
-Here are some things to put at the start of the title to help me sort messages:
-* [F]...Feature proposal
-* [B]...Bug
-* [C]...Code (to put in) - needs to be in current style!
-
-Note: Be as short and precise as possible!
-
-What I care about (in no particular order):
-* Readability
-* Simplicity
-* Modifiability
-* Logical separation
-
-Things to do:
-* More examples
-* Adding an option for imperfect play
-* Adding a cutoff function
-* Maybe adding Quiescence Search
-* Enclosing this in a generic Monte Carlo Search Tree
-
 ### Explanation
-The minimax algorithm returns the objectively best move, meaning the move that is best, even when the other player makes the best response.
+The minimax algorithm returns the objectively best move, meaning the move that is best, even when the other player makes the best response. This is enhanced by alpha-beta pruning, which cuts off unnecessary evaluations, therefore making it faster, without compromising the quality of the evaluation.
 A game like TicTacToe is always a draw with best play, which means that you can't win against an AI implementing this algorithm.
 
 [Minimax.kt](https://github.com/danielbinder/GameAI/blob/main/src/main/kotlin/Minimax.kt) is a simple and fairly generic implementation of the minimax algorithm.
@@ -49,3 +27,19 @@ The utility function is trivial:
 
 I hope this illustrates how simple it can be to add the minimax algorithm to your existing project with very few lines of code that you mostly have anyway.
 If the evaluation is anything other than '0' here, you have already lost and the further away you get from zero, the closer you are to a loss :)
+
+### Contributions
+If you want to understand the project, read the explanation above. Code must be in current Style.
+
+What I care about (in no particular order):
+* Readability
+* Simplicity
+* Modifiability
+* Logical separation
+
+Things to do:
+* More examples!!!
+* Adding an option for imperfect play
+* Adding a cutoff function
+* Maybe adding Quiescence Search
+* Enclosing this in a generic Monte Carlo Search Tree
